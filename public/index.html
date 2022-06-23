@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Teste Device - ESP32</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+
+
+</head>
+
+<body>
+
+    <img src="https://ece2-179-124-199-62.sa.ngrok.io/" width="400" height="auto"/>
+
+    <button id="frente">frente</button>
+    <button id="traz">traz</button>
+    <button id="direita">direita</button>
+    <button id="esquerda">esquerda</button>
+    <button id="parar">parar</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+
+    <script>
+
+        
+
+        const socket = io("ws://192.168.0.114:3000");
+
+        socket.on("connect", () => {
+            console.log(socket.connected); // true
+        });
+
+        $("#frente").click(() => {
+            console.log('clicou');
+            socket.emit("seguirFrente", 'teste');
+        })
+        $("#traz").click(() => {
+            console.log('clicou');
+            socket.emit("seguirTraz", 'teste');
+        })
+        $("#direita").click(() => {
+            console.log('clicou');
+            socket.emit("seguirDireita", 'teste');
+        })
+        $("#esquerda").click(() => {
+            console.log('clicou');
+            socket.emit("seguirEsquerda", 'teste');
+        })
+        $("#parar").click(() => {
+            console.log('clicou');
+            socket.emit("seguirParar", 'teste');
+        })
+
+
+
+    </script>
+
+</body>
+
+</html>
