@@ -8,30 +8,73 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Teste Device - ESP32</title>
+    <title>Controle Remoto - ESP32</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 
+    <style>
+        body {
+            background-color: #ffe9c4;
+        }
 
+        .camera {
+            border: solid brown 5px;
+            border-radius: 10px;
+            width: 100%;
+            /* height: 500px; */
+        }
 
+        .btn {
+            min-height: 80px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <img src="https://ece2-179-124-199-62.sa.ngrok.io/" width="400" height="auto"/>
 
-    <button id="frente">frente</button>
-    <button id="traz">traz</button>
-    <button id="direita">direita</button>
-    <button id="esquerda">esquerda</button>
-    <button id="parar">parar</button>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-5 m-4">
+                <img id="img" class="camera" src="https://13ea-179-124-199-62.sa.ngrok.io" />
+            </div>
+
+        </div>
+
+        <div class="row justify-content-center mb-3">
+            <div class="d-grid col-4 col-md-2">
+                <button class="btn btn-outline-danger" id="frente">&uarr;<br>Acelerar</button>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+
+            <div class="d-grid col-4 col-md-2">
+                <button class="btn btn-outline-danger" id="esquerda">&larr;<br>Esquerda</button>
+            </div>
+
+            <div class="d-grid col-4 col-md-2">
+                <button class="btn btn-outline-danger" id="traz">&darr;<br>Ré</button>
+            </div>
+
+            <div class="d-grid col-4 col-md-2">
+                <button class="btn btn-outline-danger" id="direita">&rarr;<br>Direita</button>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
 
     <script>
 
-        
+        var status = '';
 
         const socket = io("https://esp32-controller.herokuapp.com/");
 
@@ -42,27 +85,54 @@
         $("#frente").click(() => {
             console.log('clicou');
             socket.emit("seguirFrente", 'teste');
+            alterarClasse('frente');
         })
         $("#traz").click(() => {
             console.log('clicou');
             socket.emit("seguirTraz", 'teste');
+            alterarClasse('traz');
         })
         $("#direita").click(() => {
             console.log('clicou');
             socket.emit("seguirDireita", 'teste');
+            alterarClasse('direita');
         })
         $("#esquerda").click(() => {
             console.log('clicou');
             socket.emit("seguirEsquerda", 'teste');
+            alterarClasse('esquerda');
         })
-        $("#parar").click(() => {
-            console.log('clicou');
-            socket.emit("seguirParar", 'teste');
-        })
+
+        function alterarClasse(novoStatus) {
+            if (status == novoStatus) {
+                socket.emit("seguirParar", 'teste');
+                status = 'parar';
+                $("#" + novoStatus).removeClass('btn-success').addClass('btn-outline-danger');
+                $("#" + novoStatus).blur();
+                return;
+            } else {
+                status = novoStatus;
+            }
+
+            $("#frente").removeClass('btn-success');
+            $("#traz").removeClass('btn-success');
+            $("#esquerda").removeClass('btn-success');
+            $("#direita").removeClass('btn-success');
+
+            $("#frente").addClass('btn-outline-danger');
+            $("#traz").addClass('btn-outline-danger');
+            $("#esquerda").addClass('btn-outline-danger');
+            $("#direita").addClass('btn-outline-danger');
+
+            $("#" + status).removeClass('btn-outline-danger').addClass('btn-success').blur();
+
+
+        }
 
 
 
     </script>
+
 
 </body>
 
