@@ -37,10 +37,11 @@
 <body>
 
 
-    <div class="container mt-5 text-center">
+    <div id="controleDiv" class="container mt-5 text-center">
         <div class="row justify-content-center">
             <div class="col-12 text-center mb-2">
-                    <iframe class="camera iframe" src="https://13ea-179-124-199-62.sa.ngrok.io" width="640px" height="480px"></iframe>
+                <iframe class="camera iframe" src="https://13ea-179-124-199-62.sa.ngrok.io" width="640px"
+                    height="480px"></iframe>
             </div>
 
         </div>
@@ -67,6 +68,15 @@
         </div>
     </div>
 
+    <div id="filaDiv" class="d-none container mt-5 text-center">
+
+        <div class="alert alert-success" role="alert">
+            A sua posição na fila é <span class="numeroFila">0</span><br>
+            Your position in the queue is <span class="numeroFila">0</span>
+        </div>
+
+    </div>
+
 
 
 
@@ -76,10 +86,23 @@
 
         var status = '';
 
+        //const socket = io("localhost:3000");
         const socket = io("https://esp32-controller.herokuapp.com/");
 
         socket.on("connect", () => {
-            console.log(socket.connected); // true
+            socket.emit("isClient", 'teste'); // true
+        });
+
+
+        socket.on("bloqueado", (data) => {
+            $(".numeroFila").text(data);
+            $("#filaDiv").removeClass('d-none');
+            $("#controleDiv").addClass('d-none');
+        });
+
+        socket.on("liberado", () => {
+            $("#filaDiv").addClass('d-none');
+            $("#controleDiv").removeClass('d-none');
         });
 
         $("#frente").click(() => {
