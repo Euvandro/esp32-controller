@@ -34,10 +34,8 @@ io.on('connection', function (socket) {
 
     socket.on("isClient", (data) => {
         if (client == null) {
-            console.log("Sem fila");
             client = socket;
         } else {
-            console.log("com fila");
             fila.push(socket);
             socket.emit('bloqueado', fila.length);
         }
@@ -45,24 +43,19 @@ io.on('connection', function (socket) {
 
     // On each "status", run this function
     socket.on("seguirFrente", (data) => {
-        console.log("recebeu frente");
         io.emit('frente');
     });
     socket.on("seguirTraz", (data) => {
-        console.log("recebeu traz");
         io.emit('traz');
     });
     socket.on("seguirDireita", (data) => {
-        console.log("recebeu dir");
         io.emit('direita');
     });
     socket.on("seguirEsquerda", (data) => {
-        console.log("recebeu esq");
         io.emit('esquerda');
     });
 
     socket.on("seguirParar", (data) => {
-        console.log("recebeu parar");
         io.emit('parar');
     });
 
