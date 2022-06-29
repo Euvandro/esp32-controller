@@ -55,6 +55,7 @@ io.on('connection', function (socket) {
         if(client.id == socket.id){
             if (fila.length > 0) {
                 client = fila.shift();
+                io.emit('parar');
                 client.emit("liberado");
             }else{
                 client = null;
