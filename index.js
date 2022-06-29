@@ -11,7 +11,7 @@ const io = require('socket.io')(http, {
 const port = process.env.PORT || 3000;
 
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '/public/index.html'));
+    res.sendFile(path.join(__dirname, '/public/carregando.html'));
 });
 
 
