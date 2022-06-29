@@ -1,5 +1,6 @@
 var app = require('express')();
 const path = require('path');
+const { fileURLToPath } = require('url');
 
 var http = require('http').createServer(app);
 const io = require('socket.io')(http, {
@@ -10,6 +11,10 @@ const io = require('socket.io')(http, {
 
 const port = process.env.PORT || 3000;
 
+var client = null;
+var fila = [];
+var timeout;
+
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '/public/index.html'));
 });
@@ -19,13 +24,15 @@ app.get('/done', function (req, res) {
 });
 
 app.post('/release-slot', function (req, res) {
-    io.emit("desconectar");
+    client.emit("desconectar");
+    
+    if (fila.length > 0) {
+        fila.push(client);
+        client = fila.shift();
+        client.emit("liberado");
+        timeout = setTimeout(function() { client.emit("desconectar") }, 5 * 60 * 1000);
+    }
 });
-
-var client = null;
-var fila = [];
-
-var timeout;
 
 io.on('connection', function (socket) {
     console.log('User Connected!');
