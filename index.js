@@ -14,17 +14,6 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
-// When the server receives a post request on /sendData
-app.post('/sendData', function (req, res) {
-
-    //send data to sockets.
-    console.log("teste");
-    io.sockets.emit('parar', { message: "Hello from server!" })
-
-    res.send({});
-});
-
-// When a new connection is requested
 
 var client = null;
 var fila = [];
