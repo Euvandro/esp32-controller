@@ -25,13 +25,15 @@ app.get('/done', function (req, res) {
 
 app.post('/release-slot', function (req, res) {
     client.emit("desconectar");
-    
+
     if (fila.length > 0) {
         fila.push(client);
         client = fila.shift();
         client.emit("liberado");
         timeout = setTimeout(function() { client.emit("desconectar") }, 5 * 60 * 1000);
     }
+
+    res.statusCode(200).send({});
 });
 
 io.on('connection', function (socket) {
@@ -67,7 +69,6 @@ io.on('connection', function (socket) {
 
 
     socket.on("disconnect", () => {
-        
 
         if(client.id == socket.id){
             io.emit('parar');
