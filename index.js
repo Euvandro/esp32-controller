@@ -27,7 +27,6 @@ app.post('/release-slot', function (req, res) {
     client.emit("desconectar");
 
     if (fila.length > 0) {
-        fila.push(client);
         client = fila.shift();
         client.emit("liberado");
         timeout = setTimeout(function() { client.emit("desconectar") }, 5 * 60 * 1000);
