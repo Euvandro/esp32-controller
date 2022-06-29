@@ -18,6 +18,9 @@ app.get('/done', function (req, res) {
     res.sendFile(path.join(__dirname, '/public/done.html'));
 });
 
+app.post('/release-slot', function (req, res) {
+    io.emit("desconectar");
+});
 
 var client = null;
 var fila = [];
@@ -30,7 +33,7 @@ io.on('connection', function (socket) {
     socket.on("isClient", (data) => {
         if (client == null) {
             client = socket;
-            timeout = setTimeout(function() { client.emit("desconectar") }, 10 * 60 * 1000);
+            timeout = setTimeout(function() { client.emit("desconectar") }, 5 * 60 * 1000);
         } else {
             fila.push(socket);
             socket.emit('bloqueado', fila.length);
@@ -65,7 +68,7 @@ io.on('connection', function (socket) {
             if (fila.length > 0) {
                 client = fila.shift();
                 client.emit("liberado");
-                timeout = setTimeout(function() { client.emit("desconectar") }, 10 * 60 * 1000);
+                timeout = setTimeout(function() { client.emit("desconectar") }, 5 * 60 * 1000);
             }else{
                 client = null;
             }
