@@ -100,10 +100,14 @@
             $("#controleDiv").addClass('d-none');
         });
 
+        socket.on("desconectar", (data) => {
+            window.location.href = window.location.href+"done";
+        });
+
         socket.on("liberado", () => {
             $("#filaDiv").addClass('d-none');
             $("#controleDiv").removeClass('d-none');
-            setTimeout(function() { window.location.href = window.location.href+"done"; }, 10 * 60 * 1000);
+            
         });
 
         $("#frente").click(() => {

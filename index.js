@@ -22,12 +22,15 @@ app.get('/done', function (req, res) {
 var client = null;
 var fila = [];
 
+var timeout;
+
 io.on('connection', function (socket) {
     console.log('User Connected!');
 
     socket.on("isClient", (data) => {
         if (client == null) {
             client = socket;
+            timeout = setTimeout(function() { client.emit("desconectar") }, 10 * 60 * 1000);
         } else {
             fila.push(socket);
             socket.emit('bloqueado', fila.length);
@@ -58,9 +61,11 @@ io.on('connection', function (socket) {
 
         if(client.id == socket.id){
             io.emit('parar');
+            clearTimeout(timeout);
             if (fila.length > 0) {
                 client = fila.shift();
                 client.emit("liberado");
+                timeout = setTimeout(function() { client.emit("desconectar") }, 10 * 60 * 1000);
             }else{
                 client = null;
             }
