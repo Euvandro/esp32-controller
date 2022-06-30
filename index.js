@@ -15,8 +15,10 @@ var client = null;
 var fila = [];
 var timeout;
 
+var charging = false;
+
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '/public/index.html'));
+    res.sendFile(path.join(__dirname, `/public/${charging ? 'carregando.html' : 'index.html'}`));
 });
 
 app.get('/done', function (req, res) {
@@ -29,10 +31,17 @@ app.post('/release-slot', function (req, res) {
     if (fila.length > 0) {
         client = fila.shift();
         client.emit("liberado");
-        timeout = setTimeout(function() { client.emit("desconectar") }, 5 * 60 * 1000);
+        timeout = setTimeout(function () { client.emit("desconectar") }, 5 * 60 * 1000);
     }
 
-    res.statusCode(200).send({});
+    res.statusCode = 200;
+    res.send();
+});
+
+app.post('/set-charging', function (req, res) {
+    charging = !charging;
+    res.statusCode = 200;
+    res.send();
 });
 
 io.on('connection', function (socket) {
@@ -41,7 +50,7 @@ io.on('connection', function (socket) {
     socket.on("isClient", (data) => {
         if (client == null) {
             client = socket;
-            timeout = setTimeout(function() { client.emit("desconectar") }, 5 * 60 * 1000);
+            timeout = setTimeout(function () { client.emit("desconectar") }, 5 * 60 * 1000);
         } else {
             fila.push(socket);
             socket.emit('bloqueado', fila.length);
@@ -69,19 +78,19 @@ io.on('connection', function (socket) {
 
     socket.on("disconnect", () => {
 
-        if(client.id == socket.id){
+        if (client.id == socket.id) {
             io.emit('parar');
             clearTimeout(timeout);
             if (fila.length > 0) {
                 client = fila.shift();
                 client.emit("liberado");
-                timeout = setTimeout(function() { client.emit("desconectar") }, 5 * 60 * 1000);
-            }else{
+                timeout = setTimeout(function () { client.emit("desconectar") }, 5 * 60 * 1000);
+            } else {
                 client = null;
             }
-        }else{
+        } else {
             fila = fila.filter(item => item.id !== socket.id);
-        }      
+        }
     });
 
 });
