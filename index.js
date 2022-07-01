@@ -15,10 +15,10 @@ var client = null;
 var fila = [];
 var timeout;
 
-var charging = true;
+var connectCounter = 0;
 
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, `/public/${charging ? 'carregando.html' : 'index.html'}`));
+    res.sendFile(path.join(__dirname, `/public/${connectCounter <= 0 ? 'carregando.html' : 'index.html'}`));
 });
 
 app.get('/done', function (req, res) {
@@ -46,6 +46,7 @@ app.post('/set-charging', function (req, res) {
 
 io.on('connection', function (socket) {
     console.log('User Connected!');
+    connectCounter++;
 
     socket.on("isClient", (data) => {
         if (client == null) {
@@ -77,7 +78,7 @@ io.on('connection', function (socket) {
 
 
     socket.on("disconnect", () => {
-
+    connectCounter--;
         if (client.id == socket.id) {
             io.emit('parar');
             clearTimeout(timeout);
