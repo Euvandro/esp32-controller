@@ -52,7 +52,8 @@ io.on('connection', function (socket) {
     console.log('User Connected!');
     
     if(connectCounter<=0){
-        io.emit("isCharging")
+        io.emit("isCharging");
+        return;
     }
 
     connectCounter++;
