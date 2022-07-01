@@ -15,7 +15,7 @@ var client = null;
 var fila = [];
 var timeout;
 
-var charging = false;
+var charging = true;
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, `/public/${charging ? 'carregando.html' : 'index.html'}`));
