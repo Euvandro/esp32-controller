@@ -50,14 +50,13 @@ app.post('/set-charging', function (req, res) {
 
 io.on('connection', function (socket) {
     console.log('User Connected!');
-    
-    if(connectCounter<=0){
-        io.emit("isCharging");
-        return;
-    }
-
     connectCounter++;
     socket.on("isClient", (data) => {
+        if(connectCounter<=1){
+            io.emit("isCharging");
+            return;
+        }
+
         if (client == null) {
             client = socket;
             timeout = setTimeout(function () { client.emit("desconectar") }, 5 * 60 * 1000);
