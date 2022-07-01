@@ -104,6 +104,10 @@
             window.location.href = window.location.href+"done";
         });
 
+        socket.on("isCharging", (data) => {
+            window.location.href = window.location.href+"charging";
+        });
+
         socket.on("liberado", () => {
             $("#filaDiv").addClass('d-none');
             $("#controleDiv").removeClass('d-none');

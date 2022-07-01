@@ -18,11 +18,15 @@ var timeout;
 var connectCounter = 0;
 
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, `/public/${connectCounter <= 0 ? 'carregando.html' : 'index.html'}`));
+    res.sendFile(path.join(__dirname, `/public/index.html`));
 });
 
 app.get('/done', function (req, res) {
     res.sendFile(path.join(__dirname, '/public/done.html'));
+});
+
+app.get('/charging', function (req, res) {
+    res.sendFile(path.join(__dirname, '/public/carregando.html'));
 });
 
 app.post('/release-slot', function (req, res) {
@@ -46,8 +50,12 @@ app.post('/set-charging', function (req, res) {
 
 io.on('connection', function (socket) {
     console.log('User Connected!');
-    connectCounter++;
+    
+    if(connectCounter<=0){
+        io.emit("isCharging")
+    }
 
+    connectCounter++;
     socket.on("isClient", (data) => {
         if (client == null) {
             client = socket;
